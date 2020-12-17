@@ -15,26 +15,27 @@ import ftplib
 import subprocess
 import base64
 import glob
+import json
 import linecache
 from urllib.request import urlopen
 from datetime import datetime
 
-token = ""
-MySQLHost = "192.95.52.247"
-MySQLUser = "root"
-MySQLPass = "Jefinhopro12345#"
-MySQLDb = "luisarpg"
-MySQLPort = 3306
+def getConfig():
+    with open("config.json") as json_file:
+        data = json.load(json_file)
+        return data
 
-rp_channel = "roleplay"
-botGuild = 778376456303935509
-ownersId = [431583878076039188, 253928606906974218]
-blackGuilds = [532412856113823784]
-ownerNameRole = "Luisa RPG Suporte"
-blockedCommands = {
-    776904739853697054: ["cor"]
-}
-closedForUsers = False
+    return None
+
+config = getConfig()
+
+rp_channel = config["rp_channel"]
+botGuild = config["bot_guild"]
+ownersId = config["owners"]
+blackGuilds = config["black_guilds"]
+ownerNameRole = config["owner_role"]
+blockedCommands = config["token"]
+closedForUsers = config["closed"]
 
 roles = {
     99: {"name": "Luisa RPG Player", "color": "808000", "price": 0},
@@ -205,8 +206,8 @@ class Bot(discord.Client):
 
     async def connectDatabase(self):
         try:
-            self.database = pymysql.connect(MySQLHost, MySQLUser, MySQLPass, MySQLDb,
-                                            port=MySQLPort, cursorclass=pymysql.cursors.DictCursor, charset='utf8')
+            self.database = pymysql.connect(config["mysql_host"], config["mysql_user"], config["mysql_pass"], config["mysql_database"],
+                                            port=3306, cursorclass=pymysql.cursors.DictCursor, charset='utf8')
             self.database.ping()
         except Exception as e:
             await self.error(e)
@@ -3081,4 +3082,4 @@ class Bot(discord.Client):
 os.system("title Discord RPG Bot by Raddis")
 intents = discord.Intents.all()
 client = Bot(intents=intents)
-client.run(token, reconnect=True)
+client.run(config["token"], reconnect=True)
