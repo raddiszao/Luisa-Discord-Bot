@@ -27,9 +27,9 @@ MySQLDb = "luisarpg"
 MySQLPort = 3306
 
 rp_channel = "roleplay"
-botGuild = 778376456303935509
-ownersId = [431583878076039188, 253928606906974218]
-blackGuilds = [532412856113823784]
+botGuild = 0000000000000
+ownersId = []
+blackGuilds = []
 ownerNameRole = "Luisa RPG Suporte"
 blockedCommands = {
     776904739853697054: ["cor"]
