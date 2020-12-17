@@ -1,0 +1,15 @@
+{
+  "token": "",
+
+  "rp_channel": "roleplay",
+  "mysql_host": "",
+  "mysql_user": "",
+  "mysql_pass": "",
+  "mysql_database": "",
+  "bot_guild": "",
+  "owners": [],
+  "black_guilds": [],
+  "owner_role": "Luisa RPG Suporte",
+  "blocked_commands": {},
+  "closed": false
+}
