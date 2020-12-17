@@ -34,7 +34,7 @@ botGuild = config["bot_guild"]
 ownersId = config["owners"]
 blackGuilds = config["black_guilds"]
 ownerNameRole = config["owner_role"]
-blockedCommands = config["token"]
+blockedCommands = config["blocked_commands"]
 closedForUsers = config["closed"]
 
 roles = {
@@ -133,11 +133,7 @@ class Bot(discord.Client):
                 await x.disconnect()
 
     async def getChannel(self, channel, guild):
-        for findChannel in guild.channels:
-            if findChannel in channel:
-                return findChannel
-
-        return None
+        return discord.utils.find(lambda item: item.name in channel, guild.channels)
 
     async def getMemberUsername(self, user):
         try:
