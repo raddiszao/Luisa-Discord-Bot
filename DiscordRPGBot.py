@@ -20,14 +20,21 @@ import linecache
 from urllib.request import urlopen
 from datetime import datetime
 
+
 def getConfig():
-    with open("config.json") as json_file:
-        data = json.load(json_file)
-        return data
+    try:
+        with open("config.json") as json_file:
+            data = json.load(json_file)
+            return data
+    except:
+        return None
 
     return None
 
+
 config = getConfig()
+if config == None:
+    print("Error loading the configuration file.")
 
 rp_channel = config["rp_channel"]
 botGuild = config["bot_guild"]
@@ -75,6 +82,7 @@ itemsList = {
     26: {"name": "Suco", "price": "15", "food": True, "eating": 4, "whitegun": False, "gun": False, "bullets": False, "westcoast": False},
     27: {"name": "Pizza", "price": "20", "food": True, "eating": 5, "whitegun": False, "gun": False, "bullets": False, "westcoast": False}
 }
+
 
 class Bot(discord.Client):
     prefix = "!"
@@ -133,7 +141,7 @@ class Bot(discord.Client):
                 await x.disconnect()
 
     async def getChannel(self, channel, guild):
-        return discord.utils.find(lambda item: item.name in channel, guild.channels)
+        return discord.utils.find(lambda item: channel in item.name, guild.channels)
 
     async def getMemberUsername(self, user):
         try:
@@ -160,7 +168,8 @@ class Bot(discord.Client):
                             guild.roles, name=roles[99]["name"])
                         if role is not None:
                             await member.add_roles(role)
-            except: pass
+            except:
+                pass
 
             if userInfo != None:
                 return userInfo
@@ -379,7 +388,8 @@ class Bot(discord.Client):
         if self.debug:
             await self.debug("%s joined in the server: %s" % (client.user.name, guild.name))
 
-        rpChannel = discord.utils.find(lambda x: x.name == rp_channel, guild.text_channels)
+        rpChannel = discord.utils.find(
+            lambda x: x.name == rp_channel, guild.text_channels)
         if rpChannel == None:
             rpChannel = await guild.create_text_channel(name=rp_channel)
 
@@ -417,8 +427,10 @@ class Bot(discord.Client):
                 await guild.leave()
             self.lastNote[guild.id] = ""
             self.cycleTask.append(client.loop.create_task(self.cycle(guild)))
-            self.cycleTask.append(client.loop.create_task(self.hungerCycle(guild)))
-            guilds += "%s (%s)(%s), "%(guild.name, len(guild.members), guild.id)
+            self.cycleTask.append(
+                client.loop.create_task(self.hungerCycle(guild)))
+            guilds += "%s (%s)(%s), " % (guild.name,
+                                         len(guild.members), guild.id)
         await self.info("Online in guilds: %s" % (guilds[:-2]))
         print("================================================================================")
 
@@ -473,7 +485,8 @@ class Bot(discord.Client):
 
                     canCommand = True
                     if message.guild.id in blockedCommands:
-                        canCommand = discord.utils.find(lambda b: b == command, blockedCommands)
+                        canCommand = discord.utils.find(
+                            lambda b: b == command, blockedCommands)
 
                     if not canCommand:
                         await message.channel.send(":no_entry: | **%s**, comando indisponível neste servidor." % (message.author.mention))
@@ -1543,7 +1556,7 @@ class Bot(discord.Client):
                             member = message.author
 
                         if member:
-                            await message.channel.send(message.author.mention, embed=discord.Embed(title="Avatar de %s" % (await self.getMemberUsername(member)), colour=member.color).set_image(url=member.avatar_url).set_author(icon_url=message.author.avatar_url, name=await self.getMemberUsername(message.author)))
+                            await message.channel.send(message.author.mention, embed=discord.Embed(title="Avatar de %s" % (await self.getMemberUsername(member)), description="Clique [aqui](%s) para baixar a imagem." % member.avatar_url, colour=member.color).set_image(url=member.avatar_url).set_author(icon_url=message.author.avatar_url, name=await self.getMemberUsername(message.author)))
                         else:
                             await message.channel.send(message.author.mention, embed=discord.Embed(description="Oops, algo deu errado, tente novamente.", colour=0xFF0000).set_footer(icon_url="https://cdn0.iconfinder.com/data/icons/weaponry-ultra-colour-collection/60/Weaponary_-_Ultra_Color_-_037_-_Sword_and_Shield-512.png", text="Hoje às %s" % datetime.now().strftime("%H:%M:%S")).set_author(icon_url=message.author.avatar_url, name=await self.getMemberUsername(message.author)))
 
@@ -1579,7 +1592,7 @@ class Bot(discord.Client):
                         guild = client.get_guild(int(args[0]))
                         if guild != None:
                             await guild.leave()
-                            await message.channel.send(":white_check_mark: | Saída do servidor **%s** sucedida."%guild.name)
+                            await message.channel.send(":white_check_mark: | Saída do servidor **%s** sucedida." % guild.name)
 
                 elif command in ['servers']:
                     async with message.channel.typing():
@@ -1589,7 +1602,8 @@ class Bot(discord.Client):
 
                         guilds = ""
                         for guild in client.guilds:
-                            guilds += "[**%s**][__%s__] %s.\n"%(guild.id, len(guild.members), guild.name)
+                            guilds += "[**%s**][__%s__] %s.\n" % (
+                                guild.id, len(guild.members), guild.name)
                         await message.channel.send("Online in guilds: \n%s" % (guilds[:-2]))
 
                 elif command in ['admpay']:
