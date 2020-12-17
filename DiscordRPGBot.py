@@ -20,16 +20,16 @@ from urllib.request import urlopen
 from datetime import datetime
 
 token = ""
-MySQLHost = ""
+MySQLHost = "192.95.52.247"
 MySQLUser = "root"
-MySQLPass = "#"
+MySQLPass = "Jefinhopro12345#"
 MySQLDb = "luisarpg"
 MySQLPort = 3306
 
 rp_channel = "roleplay"
-botGuild = 0000000000000
-ownersId = []
-blackGuilds = []
+botGuild = 778376456303935509
+ownersId = [431583878076039188, 253928606906974218]
+blackGuilds = [532412856113823784]
 ownerNameRole = "Luisa RPG Suporte"
 blockedCommands = {
     776904739853697054: ["cor"]
@@ -132,8 +132,11 @@ class Bot(discord.Client):
                 await x.disconnect()
 
     async def getChannel(self, channel, guild):
-        channel = discord.utils.get(guild.channels, name=channel)
-        return channel
+        for findChannel in guild.channels:
+            if findChannel in channel:
+                return findChannel
+
+        return None
 
     async def getMemberUsername(self, user):
         try:
